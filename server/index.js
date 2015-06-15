@@ -39,8 +39,16 @@ app
 // Routes
 app
   .use('/auth', authRouter)
-  .get('/messages', function (req, res) {
-    r.table('messages')
+  .post('/message', function (req, res) {
+    console.log(req.params, req.body);
+    return r.table('messages').insert({
+      text: req.params.text,
+      email: req.params.email,
+      created: (new Date()).getTime()
+    }).run(r.conn);
+  })
+  .get('/message', function (req, res) {
+    return r.table('messages')
      .orderBy({ index: 'created'})
      .coerceTo('array')
      .run(r.conn)
@@ -69,14 +77,4 @@ io.on('connection', function (socket) {
          });
        });
     });
-
-  // Insert new messages
-  socket.on('message', function (data) {
-    r.table('messages').insert({
-      text: data.text,
-      email: data.email,
-      created: (new Date()).getTime()
-    }).run(r.conn);
- });
-
 });
