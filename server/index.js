@@ -42,8 +42,8 @@ app
   .post('/message', function (req, res) {
     console.log(req.params, req.body);
     return r.table('messages').insert({
-      text: req.params.text,
-      email: req.params.email,
+      text: req.body.text,
+      email: req.body.email,
       created: (new Date()).getTime()
     }).run(r.conn);
   })
